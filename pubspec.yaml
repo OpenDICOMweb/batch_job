@@ -1,0 +1,26 @@
+name: batch_job
+description: Tools for running batch jobs
+version: 0.7.0
+author: Jim Philbin <jfphilbin@gmail.com>
+
+homepage: https://github.com/OpenDICOMweb/batch_job
+
+environment:
+  sdk: '>=1.24.2 <2.1.0'
+
+dependencies:
+  args: any
+  core:
+    path: C:/acr/odw/sdk/core
+    version: ^0.7.0
+  convert:
+    path: C:/acr/odw/sdk/convert
+    version: ^0.7.0
+
+dev_dependencies:
+  benchmark_harness: ^1.0.4
+  grinder: ^0.8.0+2
+  test:  ^0.12.24
+  test_tools:
+    path: C:/acr/odw/test_tools
+    version: ^0.7.0
