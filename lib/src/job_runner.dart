@@ -19,7 +19,7 @@ import 'package:batch_job/src/job_reporter.dart';
 // ignore_for_file: avoid_catches_without_on_clauses
 
 // **** change this name when testing
-const String defaultDirName = 'C:/odw/test_data';
+const String defaultDirName = 'C:/acr/odw/test_data/6684';
 
 /// Get target directory and validate it.
 Directory getDirectory(JobArgs args) {
