@@ -16,6 +16,9 @@ dependencies:
   convert:
     path: C:/acr/odw/sdk/convert
     version: ^0.7.0
+  io:
+    path: C:/acr/odw/sdk/io
+    version: ^0.7.0
 
 dev_dependencies:
   benchmark_harness: ^1.0.4

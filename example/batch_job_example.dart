@@ -8,6 +8,6 @@
 
 // import 'package:batch_job/batch_job.dart';
 
-main() {
+void main() {
 
 }

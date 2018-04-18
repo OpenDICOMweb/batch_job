@@ -10,10 +10,11 @@ import 'dart:async' hide Timer;
 import 'dart:io';
 
 import 'package:core/core.dart';
+import 'package:io/io.dart';
 
-import 'package:convert/src/tools/job_args.dart';
-import 'package:convert/src/tools/job_reporter.dart';
-import 'package:convert/src/utilities/io_utils.dart';
+import 'package:batch_job/src/job_args.dart';
+import 'package:batch_job/src/job_reporter.dart';
+
 
 // ignore_for_file: avoid_catches_without_on_clauses
 
