@@ -12,29 +12,32 @@ import 'package:args/args.dart';
 import 'package:core/core.dart';
 
 class JobArgs {
-  /// The name of the program that is running
-  String program;
+  /// The location to put error log files
+  String inputDir;
 
-  /// The
+  /// The location to put error log files
+  String outputDir;
+
+  /// The location of the log file, which describes the results.
   String logPath;
 
   /// The location of the summary file, which describes the results.
   String summary;
 
-  /// The location to put error log files
-  String outDir;
+  /// Print a short message every [shortMsgInterval] files processed.
+  int shortMsgInterval;
 
-  /// Report every n files processed
-  int shortMsgEvery;
-
-  int longMsgEvery = 10000;
+  /// Print a long message every [longMsgInterval] files processed.
+  int longMsgInterval;
 
   /// The log Level for first run
-  Level baseLevel;
+  Level logLevel = Level.warn;
 
-  /// The Error Level for logging error run.
-  //TODO: finish
-  Level errorLevel;
+  /// The name of the program that is running
+  String program;
+
+  /// The argument processor for Job arguments.
+  ArgParser parser;
 
   /// The parser's [ArgResults].
   ArgResults argResults;
@@ -42,29 +45,12 @@ class JobArgs {
   /// If true displays a help message and exits.
   bool showHelp = false;
 
-  /// The argument processor for Job arguments.
-  ArgParser parser;
-
   JobArgs(List<String> args) {
     program = programName;
     parser = getParser();
     argResults = parser.parse(args);
+    inputDir = argResults.rest[0];
   }
-
-  void setLogPath(Object path) => (path is String) ? logPath = path : null;
-
-  void setSummary(Object results) =>
-      (results is String) ? summary = results : null;
-
-  void setOutDir(Object dir) => (dir is String) ? outDir = dir : null;
-
-  void setShortInterval(Object count) =>
-      (count is String) ? shortMsgEvery = _parseInt(count) : null;
-
-  void setLongInterval(Object count) =>
-      (count is String) ? longMsgEvery = _parseInt(count) : null;
-
-  void setDebugLevel(Object mode) => baseLevel = Level.lookup(mode);
 
   int get length => argResults.arguments.length;
 
@@ -78,82 +64,150 @@ class JobArgs {
   String get help => parser.usage;
 
   String get info => '''JobArgs:
-  program: $program
-  logPath: '$logPath'
-  summary: '$summary'
-  outDir: '$outDir'
-  every: $shortMsgEvery
-  baseLevel: $baseLevel
-  errorLevel: $errorLevel
+    inputDir: '$inputDir'
+   outputDir: '$outputDir'
+     logPath: '$logPath'
+     summary: '$summary'
+       short: $shortMsgInterval
+        long: $longMsgInterval
+   baseLevel: $logLevel
+     program: $program
   argResults: ${argResults.arguments}
-  showHelp: $showHelp
+    showHelp: $showHelp
   ''';
+
+  void _setLogPath(Object path) => (path is String) ? logPath = path : null;
+
+  void _setSummary(Object results) =>
+      (results is String) ? summary = results : null;
+
+  void _setOutDir(Object dir) => (dir is String) ? outputDir = dir : null;
+
+  void _setShortInterval(Object count) =>
+      (count is String) ? shortMsgInterval = _parseInt(count) : null;
+
+  void _setLongInterval(Object count) =>
+      (count is String) ? longMsgInterval = _parseInt(count) : null;
+
+  void _setDebugLevel(Object mode) => logLevel = Level.lookup(mode);
 
   int _parseInt(String s) {
     final n = int.tryParse(s);
     return (n == null) ? 100 : n;
   }
 
+  void _setMsgLevels(String msg) {
+    print('msg: $msg');
+    if (msg == '') return;
+    final colon = msg.indexOf(':');
+    if (colon == -1) {
+      shortMsgInterval = _parseInt(msg);
+    } else {
+      shortMsgInterval = _parseInt(msg.substring(0, colon));
+      longMsgInterval = _parseInt(msg.substring(colon + 1));
+      print('shortMsg: $shortMsgInterval');
+      print('longMsg: $longMsgInterval');
+    }
+  }
+
+  void _setLogLevel(String v) {
+    switch (v) {
+      case 's':
+        logLevel = Level.off;
+        break;
+      case 'c':
+        logLevel = Level.config;
+        break;
+      case 'w':
+        logLevel = Level.warn1;
+        break;
+      case 'd':
+        logLevel = Level.debug;
+        break;
+      case 'v':
+        logLevel = Level.debug3;
+        break;
+      default:
+        logLevel = Level.info;
+    }
+  }
+
   ArgParser getParser() => new ArgParser()
-    ..addOption('logFile',
-        abbr: 'f',
-        defaultsTo: './$program.log',
-        callback: setLogPath,
-        help: 'The log file- defaults to ./logger.log')
     ..addOption('results',
         abbr: 'r',
         defaultsTo: './results.txt',
-        callback: setSummary,
+        callback: _setSummary,
         help: 'The results file')
     ..addOption('outDir',
         abbr: 'o',
         defaultsTo: './output',
-        callback: setOutDir,
+        callback: _setOutDir,
         help: 'The output directory - created files have same name as source')
-    //TODO: need better name use syntax like n:m where n is short and m is long
-    //      if long missing do only short, if n=m do both.
-    ..addOption('every',
-        abbr: 'e',
-        defaultsTo: '1000',
-        callback: setShortInterval,
-        help: 'print a progress message every n files processed"')
+    ..addOption('msg',
+        abbr: 'm',
+        defaultsTo: '1000:10000',
+        callback: _setMsgLevels,
+        help: 'm:n - print a short:long progress message every m:n files '
+            'processed"')
     // These next options are for the logger Level
     ..addOption('Level',
         abbr: 'l',
         allowed: [
           'error', 'config', 'warn0', 'warn1', 'info0', 'info1',
-          'debug0', 'debug1', 'debug2', 'debug3' //No Reformat
+          'debug', 'debug1', 'debug2', 'debug3' //No Reformat
         ],
         defaultsTo: 'error',
-        callback: setDebugLevel,
+        callback: _setDebugLevel,
         help: 'The logging mode - defaults to info')
-    ..addFlag('silent', abbr: 's', callback: (v) {
-      if (v) baseLevel ??= Level.error;
-    }, help: 'Silent mode - mode is set to "error"')
-    ..addFlag('config', abbr: 'c', defaultsTo: false, callback: (v) {
-      if (v) baseLevel ??= Level.config;
-    }, help: 'mode is set to "config"')
-    ..addFlag('warn', abbr: 'w', defaultsTo: false, callback: (v) {
-      if (v) baseLevel ??= Level.warn1;
-    }, help: 'mode is set to "info"')
-    ..addFlag('info', abbr: 'i', defaultsTo: false, callback: (v) {
-      if (v) baseLevel ??= Level.info1;
-    }, help: 'mode is set to "info"')
-    ..addFlag('debug', abbr: 'd', defaultsTo: false, callback: (v) {
-      if (v) baseLevel ??= Level.debug0;
-    }, help: 'mode is set to "debug"')
-    ..addFlag('verbose', abbr: 'v', defaultsTo: false, callback: (v) {
-      if (v) baseLevel ??= Level.debug3;
-    }, help: 'mode is set to "debug3"')
+    ..addFlag('silent',
+        abbr: 's',
+        defaultsTo: false,
+        callback: (v) => v ? logLevel = Level.severe : false,
+        help: 'Silent mode - mode is set to "error"')
+    ..addFlag('config',
+        abbr: 'c',
+        defaultsTo: false,
+        callback: (v) => v ? logLevel = Level.config : false,
+        help: 'mode is set to "config"')
+    ..addFlag('warn',
+        abbr: 'w',
+        defaultsTo: false,
+        callback: (v) => v ? logLevel = Level.warn1 : false,
+        help: 'mode is set to "warn"')
+    ..addFlag('info',
+        abbr: 'i',
+        defaultsTo: false,
+        callback: (v) => v ? logLevel = Level.info1 : false,
+        help: 'mode is set to "info"')
+    ..addFlag('debug',
+        abbr: 'd',
+        defaultsTo: false,
+        callback: (v) => v ? logLevel = Level.debug : false,
+        help: 'mode is set to "debug"')
+    ..addFlag('verbose',
+        abbr: 'v',
+        defaultsTo: false,
+        callback: (v) => v ? logLevel = Level.all : false,
+        help: 'mode is set to "all"')
     // Usage option
     ..addFlag('help',
         abbr: 'h',
         defaultsTo: false,
-        callback: (v) => (v) ? showHelp = true : showHelp = false,
+        callback: (v) => v ? showHelp = true : showHelp = false,
         help: 'prints some helpful information about this program');
-
-  static JobArgs parse(List<String> args) => new JobArgs(args);
 
   @override
   String toString() => '$runtimeType: $argResults';
+
+  static JobArgs parse(List<String> args) => new JobArgs(args);
+
+  static List<String> makeJobArgs(String dir,
+          [String logPath = './logger.log',
+          String summary = 'summary.txt',
+          String outDir = '.',
+          String shortMsgEvery = '1000',
+          String logMsgEvery = '10000',
+          Level baseLevel,
+          Level errorLevel]) =>
+      ['$dir', '-f $logPath', '-r ./results.txt', 'Level=$baseLevel'];
 }
