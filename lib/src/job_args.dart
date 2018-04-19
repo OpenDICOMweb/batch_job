@@ -110,10 +110,11 @@ class JobArgs {
         defaultsTo: './output',
         callback: setOutDir,
         help: 'The output directory - created files have same name as source')
-    //TODO: need better name
+    //TODO: need better name use syntax like n:m where n is short and m is long
+    //      if long missing do only short, if n=m do both.
     ..addOption('every',
         abbr: 'e',
-        defaultsTo: '10output',
+        defaultsTo: '1000',
         callback: setShortInterval,
         help: 'print a progress message every n files processed"')
     // These next options are for the logger Level
