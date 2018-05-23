@@ -79,7 +79,7 @@ class JobRunner {
 
   JobRunner._(this.directory, this.files, this.doFile, this.reporter,
       {Level level = Level.info0, this.throwOnError = true}) {
-    system.log.level = level;
+    global.log.level = level;
     _greeting();
   }
 

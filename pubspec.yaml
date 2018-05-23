@@ -12,7 +12,7 @@ dependencies:
   args: any
   core:
     path: C:/acr/odw/sdk/core
-    version: ^0.7.0
+    version: ^0.7.2
   convert:
     path: C:/acr/odw/sdk/convert
     version: ^0.7.0
