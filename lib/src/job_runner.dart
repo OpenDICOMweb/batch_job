@@ -5,12 +5,12 @@
 //  that can be found in the odw/LICENSE file.
 //  Primary Author: Jim Philbin <jfphilbin@gmail.edu>
 //  See the AUTHORS file for other contributors.
-
+//
 import 'dart:async' hide Timer;
 import 'dart:io';
 
 import 'package:core/core.dart';
-import 'package:io/io.dart';
+import 'package:io_extended/io_extended.dart';
 
 import 'package:batch_job/src/job_args.dart';
 import 'package:batch_job/src/job_reporter.dart';
