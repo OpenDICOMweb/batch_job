@@ -48,5 +48,13 @@ void main() {
       expect(args.logLevel, equals(Level.debug));
       expect(args.argResults.rest[0], equals('foo/bar'));
     });
+
+    test('test Arg0', () {
+      const outdir = 'foo/bar/output/';
+      final args = new JobArgs(args0);
+      expect(args.outputDir, equals(outdir));
+      expect(args.logLevel, equals(Level.debug));
+      expect(args.argResults.rest[0], equals('foo/bar'));
+    });
   });
 }

@@ -76,18 +76,18 @@ class JobArgs {
     showHelp: $showHelp
   ''';
 
-  void _setLogPath(Object path) => (path is String) ? logPath = path : null;
+//  void _setLogPath(Object path) => (path is String) ? logPath = path : null;
 
   void _setSummary(Object results) =>
       (results is String) ? summary = results : null;
 
   void _setOutDir(Object dir) => (dir is String) ? outputDir = dir : null;
 
-  void _setShortInterval(Object count) =>
-      (count is String) ? shortMsgInterval = _parseInt(count) : null;
+//  void _setShortInterval(Object count) =>
+//      (count is String) ? shortMsgInterval = _parseInt(count) : null;
 
-  void _setLongInterval(Object count) =>
-      (count is String) ? longMsgInterval = _parseInt(count) : null;
+//  void _setLongInterval(Object count) =>
+//      (count is String) ? longMsgInterval = _parseInt(count) : null;
 
   void _setDebugLevel(Object mode) => logLevel = Level.lookup(mode);
 
@@ -110,6 +110,7 @@ class JobArgs {
     }
   }
 
+/*
   void _setLogLevel(String v) {
     switch (v) {
       case 's':
@@ -131,6 +132,7 @@ class JobArgs {
         logLevel = Level.info;
     }
   }
+*/
 
   ArgParser getParser() => new ArgParser()
     ..addOption('results',

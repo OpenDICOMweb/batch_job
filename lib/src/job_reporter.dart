@@ -53,9 +53,9 @@ class JobReporter {
       this.doReportFailure = true,
       this.showPath = false})
       //Urgent: figure out how to calculate interval.
-      : this.shortInterval = (short == null) ? getShortInterval(total) : short,
-        this.log = (logIt) ? new Logger('JobReporter') : null,
-        this.timer = new Timer(start: false) {
+      : shortInterval = (short == null) ? getShortInterval(total) : short,
+        log = (logIt) ? new Logger('JobReporter') : null,
+        timer = new Timer(start: false) {
     longInterval = (long == null) ? 10 * shortInterval : long;
 
 /*
