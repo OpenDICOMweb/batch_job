@@ -13,13 +13,13 @@ import 'package:test/test.dart';
 //Urgent: implement test of JobArgParser
 
 void main() {
-  const args0 = const <String>['foo/bar -o foo/bar/output/ -d'];
+  const args0 = <String>['foo/bar -o foo/bar/output/ -d'];
 
   group('Test Job ArgParser', () {
     const inputDir = 'foo/bar/';
 
     test('basic test input dir and defaults', () {
-      final args = new JobArgs(['foo/bar/']);
+      final args = JobArgs(['foo/bar/']);
       expect(args.shortMsgInterval == 1000, true);
       expect(args.longMsgInterval == 10000, true);
       expect(args.argResults.rest[0], equals(inputDir));
@@ -27,7 +27,7 @@ void main() {
 
     test('test default message intervals', () {
       const input = 'foo/bar/bas/';
-      final jArgs = new JobArgs([input]);
+      final jArgs = JobArgs([input]);
       expect(jArgs.shortMsgInterval == 1000, true);
       expect(jArgs.longMsgInterval == 10000, true);
       expect(jArgs.inputDir == input, true);
@@ -35,7 +35,7 @@ void main() {
 
     test('test message intervals', () {
       const inputDir = 'foo/bar/bas/';
-      final args = new JobArgs(['-m', '10:100', inputDir]);
+      final args = JobArgs(['-m', '10:100', inputDir]);
       expect(args.shortMsgInterval == 10, true);
       expect(args.longMsgInterval == 100, true);
       expect(args.inputDir == inputDir, true);
@@ -43,7 +43,7 @@ void main() {
 
     test('test output directory', () {
       const outdir = 'foo/bar/output/';
-      final args = new JobArgs(['-o', outdir, '-d', 'foo/bar']);
+      final args = JobArgs(['-o', outdir, '-d', 'foo/bar']);
       expect(args.outputDir, equals(outdir));
       expect(args.logLevel, equals(Level.debug));
       expect(args.argResults.rest[0], equals('foo/bar'));
@@ -51,7 +51,7 @@ void main() {
 
     test('test Arg0', () {
       const outdir = 'foo/bar/output/';
-      final args = new JobArgs(args0);
+      final args = JobArgs(args0);
       expect(args.outputDir, equals(outdir));
       expect(args.logLevel, equals(Level.debug));
       expect(args.argResults.rest[0], equals('foo/bar'));

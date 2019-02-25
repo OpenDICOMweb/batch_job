@@ -10,7 +10,6 @@ import 'dart:io';
 
 import 'package:core/core.dart';
 
-
 int getShortInterval(int total) {
   if (total < 20) return 1;
   if (total < 100) return 5;
@@ -54,8 +53,8 @@ class JobReporter {
       this.showPath = false})
       //Urgent: figure out how to calculate interval.
       : shortInterval = (short == null) ? getShortInterval(total) : short,
-        log = (logIt) ? new Logger('JobReporter') : null,
-        timer = new Timer(start: false) {
+        log = logIt ? Logger('JobReporter') : null,
+        timer = Timer(start: false) {
     longInterval = (long == null) ? 10 * shortInterval : long;
 
 /*
@@ -89,11 +88,11 @@ class JobReporter {
 
   int get failure => _failure;
 
-  bool get check => (_count % shortInterval == 0) ? true : false;
+  bool get check => _count % shortInterval == 0;
 
   /// Starts the clock and returns a useful message
   String get startReport {
-    _startTime = new DateTime.now();
+    _startTime =  DateTime.now();
     timer.start();
     return maybePrint(_startMsg);
   }
@@ -101,7 +100,7 @@ class JobReporter {
   /// Returns an end of job report
   String get endReport {
     timer.stop();
-    _endTime = new DateTime.now();
+    _endTime =  DateTime.now();
     _totalElapsed = _endTime.difference(_startTime);
     return maybePrint(_endMsg);
   }
@@ -124,7 +123,7 @@ class JobReporter {
 
   String shortMsg(String path) {
     final n = '$_count'.padLeft(countWidth);
-    final p = (showPath) ? path : '';
+    final p = showPath ? path : '';
     var elapsed = timer.elapsed.toString();
     final dotPos = elapsed.indexOf('.');
     elapsed = elapsed.substring(0, dotPos);
@@ -138,8 +137,8 @@ class JobReporter {
   }
 
   String get failures {
-    final sb  =  new StringBuffer('Failures($_failure):');
-    for (var s in failuresList) sb.write('  $s\n');
+    final sb =  StringBuffer('Failures($_failure):');
+    for (final s in failuresList) sb.write('  $s\n');
     return sb.toString();
   }
 
@@ -163,4 +162,4 @@ $failures
 ''';
 }
 
-const List<String> dcmExtensions = const <String>['dcm', ''];
+const List<String> dcmExtensions = <String>['dcm', ''];

@@ -52,6 +52,8 @@ class JobArgs {
     inputDir = argResults.rest[0];
   }
 
+  factory JobArgs.parse(List<String> args) => JobArgs(args);
+
   int get length => argResults.arguments.length;
 
   String get programName {
@@ -134,7 +136,7 @@ class JobArgs {
   }
 */
 
-  ArgParser getParser() => new ArgParser()
+  ArgParser getParser() => ArgParser()
     ..addOption('results',
         abbr: 'r',
         defaultsTo: './results.txt',
@@ -200,8 +202,6 @@ class JobArgs {
 
   @override
   String toString() => '$runtimeType: $argResults';
-
-  static JobArgs parse(List<String> args) => new JobArgs(args);
 
   static List<String> makeJobArgs(String dir,
           [String logPath = './logger.log',

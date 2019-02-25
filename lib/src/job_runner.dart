@@ -15,7 +15,6 @@ import 'package:io_extended/io_extended.dart';
 import 'package:batch_job/src/job_args.dart';
 import 'package:batch_job/src/job_reporter.dart';
 
-
 // ignore_for_file: avoid_catches_without_on_clauses
 
 // **** change this name when testing
@@ -25,7 +24,8 @@ const String defaultDirName = 'C:/acr/odw/test_data/6684';
 Directory getDirectory(JobArgs args) {
   String dirName;
   if (args.length == 0) {
-    stderr.write('No Directory name supplied - defaulting to $defaultDirName\n');
+    stderr
+        .write('No Directory name supplied - defaulting to $defaultDirName\n');
     dirName = defaultDirName;
   } else {
     dirName = args.argResults.arguments[0];
@@ -44,9 +44,9 @@ Directory getDirectory(JobArgs args) {
 }
 
 JobReporter getJobReporter(int fileCount, String path, int interval) =>
-    new JobReporter(fileCount, from: path, short: interval);
+    JobReporter(fileCount, from: path, short: interval);
 
-typedef Future<bool> DoFile(File f);
+typedef DoFile = Future<bool> Function(File f);
 
 class JobRunner {
   static const int defaultInterval = 1;
@@ -64,7 +64,7 @@ class JobRunner {
       bool throwOnError = true}) {
     final dir = getDirectory(jobArgs);
     final reporter = getJobReporter(fileCount(dir), dir.path, interval);
-    return new JobRunner._(dir, null, doFile, reporter,
+    return JobRunner._(dir, null, doFile, reporter,
         level: level, throwOnError: throwOnError);
   }
 
@@ -73,7 +73,7 @@ class JobRunner {
       Level level = Level.info0,
       bool throwOnError = true}) {
     final reporter = getJobReporter(files.length, 'FileList', interval);
-    return new JobRunner._(null, files, doFile, reporter,
+    return JobRunner._(null, files, doFile, reporter,
         level: level, throwOnError: throwOnError);
   }
 
@@ -83,13 +83,13 @@ class JobRunner {
     _greeting();
   }
 
-  Future<Null> run() async {
+  Future<void> run() async {
     reporter.startReport;
     await walkDirectoryFiles(directory, runFile);
     reporter.endReport;
   }
 
-  Future<Null> runList() async {
+  Future<void> runList() async {
     reporter.startReport;
     await walkPathList(files, runFile);
     reporter.endReport;
@@ -100,8 +100,7 @@ class JobRunner {
     bool success;
     try {
       success = await doFile(f);
-      if (!success)
-      	failures.add(path);
+      if (!success) failures.add(path);
     } catch (e) {
       if (throwOnError) rethrow;
     }
@@ -112,9 +111,11 @@ class JobRunner {
 
   static void job(JobArgs jobArgs, DoFile doFile,
           {int interval, Level level = Level.info, bool throwOnError = true}) =>
-      new JobRunner(jobArgs, doFile, interval: interval)..run();
+      JobRunner(jobArgs, doFile, interval: interval)..run();
 
   static void fileList(List<File> files, DoFile doFile,
-          {int interval, Level level = Level.debug, bool throwOnError = true}) =>
-      new JobRunner.list(files, doFile, interval: interval)..runList();
+          {int interval,
+          Level level = Level.debug,
+          bool throwOnError = true}) =>
+      JobRunner.list(files, doFile, interval: interval)..runList();
 }
